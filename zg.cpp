@@ -1,134 +1,140 @@
-#include <iomanip>
-#include <iostream>
-using namespace;
-struct zggz
+#include <stdio.h>
+#include <string.h>
+#define N 100
+struct worker
 {
-  char name[10];
-  char gh[10];
-  float gwgz[10];
-  float xjgz[10];
-  float zwgz[10];
-  float jxgz[10];
-  float yfgz[10];
-  float sds[10];
-  float sfgz[10];
-}
-
-void read()
-{
-
-	char name[20];
-	cout<<"请输入工号："<<endl;
-	scanf("%",name);
-
-
-}
-
-void write()
-{
-	ofstream fout("gz.dat",ios::out);
-    if(!fout)
-	{
-		cout<<"不能打开"
-			exit(1);
-	}
-	fout<<
-
-}
-
-void find()
-{
-}
-
-void list()
-{
-}
-
-void modify()
-{
-}
-
-void del()
-{
-}
-
-void add()
-{
-}
-
-void grsds()
-{
+	char gh;//*工号
+	char name;//*姓名
+	float gw;//*岗位工资
+	float xj;//*薪级工资
+	float zw;//*职务津贴
+	float jx;//*绩效工资
+	float yf;//*应发工资
+	float gr;//*个人所得税
+	float sf;//*实发工资
 }
 int main()
-{
-  int choose_num;
-	fstream fout("gz.dat", ios::binary|ios::out);
-  
-    fstream fin("gz.dat", ios::binary|ios::in);
-
-
-	cout<<"欢迎使用职工管理系统"<<endl;
-	cout<<"请选择你要使用的功能（键盘输入数字，回车确认）"<<endl;
-	cout<<"1.查询"<<"\n"<<"2.修改"<<"\n"<<"3.添加"<<"\n"<<"4.删除"<<"\n"<<"5.浏览"<<"\n"<<"6.保存"<<"\n"<<"7.退出"<<endl;
-	cin>>choose_num;
-	if(choose_num<8&&choose_num>0)
+{   
+	int input(struct worker work[],int a );//输入函数，输入职工的信息
+	void read(struct worker work[10],int a);//*保存职工信息
+	void write(struct worker work[10],int a);//*保存职工信息
+    void find(struct worker work[10],int a);//*查询职工信息
+    void list(struct worker work[10],int a);//*浏览职工信息
+    void modify(struct worker work[10],int a);//*修改职工信息
+    void del(struct worker work[10],int a);//*删除职工信息
+    void add(struct worker work[10],int a);//*添加职工信息
+    void grsds(struct worker work[10],int a);//*计算个人所得
+	struct worker work[N],*p=work;
+	int a=N,select;
+	/*
+	printf("请输入职工人数:");
+	scanf ("%d",&a);
+	*/
+	printf("您是首次登陆本系统，请输入员工信息：\n") ;
+	a=input(p,a);
+	do
 	{
-	switch(choose_num)
-	{
-	    case 1:cout<<"已进入查询模块";break;
-	case 2:cout<<"已进入修改模块";break;
-	case 3: 
+		printf("\n **********职工工资管理系统********** \n");
+		printf("\n 1.读取职工工资 \n");
+		printf("\n 2.保存职工工资 \n");
+		printf("\n 3.查询职工工资 \n");
+		printf("\n 4.浏览职工工资 \n");
+		printf("\n 5.修改职工信息 \n");
+        printf("\n 6.删除职工信息 \n");
+		printf("\n 7.添加职工信息 \n");
+		printf("\n 8.计算个人所得 \n");
+		printf("\n 9.退出    系统 \n");
+		printf("\n ************************************ \n");
+		printf("\n 请输入您的选择 \n");
+		scanf("%d",&select);
+		switch(select)
 		{
-			cout<<"已进入添加模块";
-			char name,gh;
-			float gwgz,xjgz,zwgz,jxgz,yfgz,sds,sfgz;
-			cout<<"请输入新工号："<<endl;
-			cin>>gh;
-			cout<<"请输入名字："<<endl;
-			cin>>name;
-			cout<<"岗位工资："<<endl;
-			cin>>gwgz;
-			cout<<"薪级工资："<<endl;
-			cin>>xjgz;
-			cout<<"职务津贴："<<endl;
-			cin>>zwgz;
-			cout<<"绩效工资："<<endl;
-			cin>>jxgz;
-			
-			
-            fout.close();
-
-
-
-
+		case 0:
+			printf("系统已有该职工信息，再次输入将覆盖记录，是否确定（请输入'y'或'n'）");
+				getchar();
+			if((getchar()=='y')||(getchar()=='Y'));
+				a=input(p,a);
+		case 1:
+			read(p,a);
 			break;
+		case 2:
+			write(p,a);
+			break;
+		case 3:
+			find(p,a);
+			break;
+		case 4:
+			list(p,a);
+			break;
+		case 5:
+			modify(p,a);
+			break;
+		case 6:
+			del(p,a);
+			break;
+		case 7:
+			add(p,a);
+			break;
+		case 8:
+			grsds(p,a);
+			break;
+		case 9:
+		    printf("要继续吗？请输入‘y’或者‘n’：");
 		}
 
+		getchar();
+		     ((getchar()=='y')||(getchar()=='Y'));
+				a=input(p,a);
+				break;
 
 
 
+		}
+	
+	while(1);
+	printf("结束！\n");
+	return 0;
+}
 
-
-
-
-
-
-	case 4:cout<<"已进入删除模块";break;
-	case 5:cout<<"已进入浏览模块";break;
-	case 6:
-
-		cout<<"已保存";break;
-	case 7:cout<<"系统退出，欢迎再次使用！";break;
+int input(struct worker work[],int a)
+{
+	int i;
+	printf("输入职工信息");
+	scanf("%d",&a);
+	printf("输入格式为：\工号，姓名\n岗位工资，薪级工资，职务津贴，绩效工资，应发工资，个人所得税，实发工资\n");
+	for(i=0;i<a;i++){
+	   
+	scanf("%d,&s",& work[i].gh,work[i].name);
+	scanf("%f,%f,%f,%f,%f,%f,%f,%f",work[i].gw,work[i].xj,work[i].zw,work[i].jx,work[i].yf,work[i].gr,work[i].sf);
 	}
-	}
-	else{
-		cout<<"请重新选择功能"<<endl;
-	return 0;}
-
-   
-
-	return 0;	
-
+return a;
 
 }
 
+
+void read(struct worker work[10],int a)//*读取职工信息
+{
+	
+
+}
+void write(struct worker work[10],int a)//*保存职工信息
+{
+}
+void find(struct worker work[10],int a)//*查询职工信息
+{
+}
+void list(struct worker work[10],int a)//*浏览职工信息
+{
+}
+void modify(struct worker work[10],int a)//*修改职工信息
+{
+}
+void del(struct worker work[10],int a)//*删除职工信息
+{
+}
+void add(struct worker work[10],int a)//*添加职工信息
+{
+}
+void grsds(struct worker work[10],int a)//*计算个人所得
+{
+}
