@@ -1,140 +1,344 @@
-#include <stdio.h>
-#include <string.h>
-#define N 100
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
 struct worker
 {
-	char gh;//*工号
-	char name;//*姓名
-	float gw;//*岗位工资
-	float xj;//*薪级工资
-	float zw;//*职务津贴
-	float jx;//*绩效工资
-	float yf;//*应发工资
-	float gr;//*个人所得税
-	float sf;//*实发工资
+		char num[10];         //工号
+		char name[10];   //姓名
+		float gwgz;        //岗位工资
+		float xjgz;       //薪级工资
+		float zwjt;          //职务津贴
+		float jxgz;         //绩效工资
+		float yfgz;        //应发工资ct 
+		float sds;           //个人所得税
+		float sfgz;         //实发工资
+}zggz[100];  
+
+int n = 0;//职工的总人数
+int i = 0;
+int flag = 0;
+     
+float grsds(float yfgz);
+
+void add(struct worker zggz[100])   //添加
+{
+	n++;
+	printf("请输入职工号：\n");
+	scanf("%s",zggz[n].num);
+	printf("请输入职工姓名：\n");
+	scanf("%s",zggz[n].name);
+	printf("请输入职工岗位工资：\n");
+	scanf("%f",&zggz[n].gwgz);
+	printf("请输入职工薪级工资：\n");
+	scanf("%f",&zggz[n].xjgz);
+	printf("请输入职工职务津贴：\n");
+	scanf("%f",&zggz[n].zwjt);
+	printf("请输入职工绩效工资：\n");
+	scanf("%f",&zggz[n].jxgz);
+	zggz[n].yfgz = zggz[n].gwgz + zggz[n].xjgz + zggz[n].zwjt + zggz[n].jxgz;
+	zggz[n].sds = grsds(zggz[n].yfgz);
+	if(zggz[n].sds == 5)
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * zggz[n].yfgz;
+	}
+	else if(zggz[n].sds == 10) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 500) + 500;
+	}
+	else if(zggz[n].sds == 15) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 2000) + 2000;
+	}
+	else if(zggz[n].sds == 20) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 5000) + 5000;
+	}
+	else if(zggz[n].sds == 25) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 20000) + 20000;
+	}
+	else if(zggz[n].sds == 30) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 40000) + 40000;
+	}
+	else if(zggz[n].sds == 35) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 60000) + 60000;
+	}
+	else if(zggz[n].sds == 40) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 80000) + 80000;
+	}
+	else if(zggz[n].sds == 45) 
+	{
+		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 100000) + 100000;
+	}
+	
+	printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
+	printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[n].num,zggz[n].name,zggz[n].gwgz,zggz[n].xjgz,zggz[n].zwjt,zggz[n].jxgz,zggz[n].yfgz,zggz[n].sds,zggz[n].sfgz);
+	printf("添加成功\n");
+	printf("按回车键退出\n");
+	getchar();
+	getchar();
+	return ;
 }
+
+void write(struct worker zggz[100])  //保存文件
+{
+	FILE*fp;   
+	if(n > 0)
+	{
+		if ((fp=fopen("gx.dat","wb"))==NULL) 
+		{
+				printf ("文件打开失败\n");
+				fclose(fp);
+				exit(0);
+		}
+		for (i=1;i<n+1;i++) 
+		{
+			fprintf(fp,"%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+		}
+				
+		fclose(fp);
+		printf("保存数据成功\n");
+	}
+	else
+	{
+		printf("当前没有数据可以保存\n");
+	}
+	printf("按回车键退出\n");
+	getchar();
+	getchar();
+	return ;
+}
+
+void read(struct worker zggz[100]) //导入数据
+{
+	FILE*fp;
+	n = 0;
+	if((fp=fopen("gx.dat","wt+"))==NULL)
+	{
+			printf ("文件打开失败\n");
+			fclose(fp);
+			exit(0);
+	}
+	else
+	{
+		
+		while(!feof(fp))
+		{
+			n++;
+			fscanf(fp,"%s %s %f %f %f %f %f %f %f\n",zggz[n].num,zggz[n].name,&zggz[n].gwgz,&zggz[n].xjgz,&zggz[n].zwjt,&zggz[n].jxgz,&zggz[n].yfgz,&zggz[n].sds,&zggz[n].sfgz);
+		} 
+	
+		fclose(fp);
+		printf("导入数据成功\n");
+		printf("按回车键退出\n");
+		getchar();
+		getchar();
+		return ;
+	}
+}
+
+void list(struct worker zggz[100])  //浏览
+{
+	printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
+	for(i=1;i<n+1;i++)
+	{
+		printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+	}
+	printf("\n按回车键退出\n");
+	getchar();
+	getchar();
+	return ;
+}
+
+void del(struct worker zggz[100])   //删除
+{
+	char gonghao[10] = {0};
+	char ch[2] = {0};
+	int j = 0;
+	printf("请输入要删除的职工号:\n");
+	scanf("%s",gonghao);
+	flag = 0;
+	for(i=1;i<n+1;i++)
+	{
+		if(strcmp(gonghao,zggz[i].num) == 0)
+		{  
+			flag = 1;
+			break;
+
+		}
+	}
+	if(flag == 1)
+	{
+		printf("是否删除：(y/n)\n");
+		while(1)
+		{
+			scanf("%s",ch);
+			if(strcmp(ch,"y") == 0)
+			{
+				for(j=i;j<n;j++)
+				{
+					strcpy(zggz[j].num,zggz[j+1].num);
+					strcpy(zggz[j].name,zggz[j+1].name);
+					zggz[j].gwgz=zggz[j+1].gwgz;
+					zggz[j].xjgz=zggz[j+1].xjgz;
+					zggz[j].zwjt=zggz[j+1].zwjt;
+					zggz[j].jxgz=zggz[j+1].jxgz;
+					zggz[j].yfgz=zggz[j+1].yfgz;
+					zggz[j].sds=zggz[j+1].sds;
+					zggz[j].sfgz=zggz[j+1].sfgz;
+				}
+				n--;
+				break;
+			}
+			else if(strcmp(ch,"n") == 0)
+			{
+				break;
+			}
+			else
+			{
+				printf("输入错误，请重新输入\n");
+			}
+		}
+	}
+	else
+	{
+		printf("\n对不起,查无此人\n");
+	}
+		
+	printf("按回车键退出\n");
+	getchar();
+	getchar();
+	return ;
+}
+
+
+void find(struct worker zggz[100])//查找
+{
+	char gonghao[10] = {0};
+	printf("请输入要查找的职工号:\n");
+	scanf("%s",gonghao);
+	flag = 0;
+	for(i=1;i<n+1;i++)
+	{
+		if(strcmp(gonghao,zggz[i].num) == 0)
+		{  
+			printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
+			printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+			flag = 1;
+			break;
+
+		}
+	}
+	if(flag == 0)
+	{		
+		printf("\n对不起,查无此人\n");
+	}
+	printf("按回车键退出\n");
+	getchar();
+	getchar();
+	return ;		
+}
+
+
+void modify(struct worker zggz[100]) //修改
+{
+
+}
+
+float grsds(float yfgz)
+{
+	for(i = 1; i < n+1; i++)
+	{
+		if(yfgz <= 500)
+		{
+			return 5;
+		}
+		else if(yfgz > 500 && yfgz <= 2000)
+		{
+			return 10;
+		}
+		else if(yfgz > 2000 && yfgz <= 5000)
+		{
+			return 15;
+		}
+		else if(yfgz > 5000 &&yfgz <= 20000)
+		{
+			return 20;
+		}
+		else if(yfgz > 20000 && yfgz <= 40000)
+		{
+			return 25;
+		}
+		else if(yfgz > 40000 && yfgz <= 60000)
+		{
+			return  30;
+		}else if(yfgz > 60000 && yfgz <= 80000)
+		{
+			return 35;
+		}
+		else if(yfgz > 80000 && yfgz <= 100000)
+		{
+			return 40;
+		}else 
+		{
+			return 45;
+		}
+	}
+}
+
+void menu() //菜单界面
+{
+		printf("***欢迎来到职工管理系统***\n\n");
+		printf("  1  查询  \n");
+		printf("  2  修改  \n");
+		printf("  3  添加  \n");
+		printf("  4  删除  \n");
+		printf("  5  保存  \n");
+		printf("  6  浏览  \n");
+		printf("  7  退出  \n");
+		printf("请选择:");
+}
+
+
 int main()
 {   
-	int input(struct worker work[],int a );//输入函数，输入职工的信息
-	void read(struct worker work[10],int a);//*保存职工信息
-	void write(struct worker work[10],int a);//*保存职工信息
-    void find(struct worker work[10],int a);//*查询职工信息
-    void list(struct worker work[10],int a);//*浏览职工信息
-    void modify(struct worker work[10],int a);//*修改职工信息
-    void del(struct worker work[10],int a);//*删除职工信息
-    void add(struct worker work[10],int a);//*添加职工信息
-    void grsds(struct worker work[10],int a);//*计算个人所得
-	struct worker work[N],*p=work;
-	int a=N,select;
-	/*
-	printf("请输入职工人数:");
-	scanf ("%d",&a);
-	*/
-	printf("您是首次登陆本系统，请输入员工信息：\n") ;
-	a=input(p,a);
-	do
+	int choice = 0;
+	read(zggz);
+	while(1)
 	{
-		printf("\n **********职工工资管理系统********** \n");
-		printf("\n 1.读取职工工资 \n");
-		printf("\n 2.保存职工工资 \n");
-		printf("\n 3.查询职工工资 \n");
-		printf("\n 4.浏览职工工资 \n");
-		printf("\n 5.修改职工信息 \n");
-        printf("\n 6.删除职工信息 \n");
-		printf("\n 7.添加职工信息 \n");
-		printf("\n 8.计算个人所得 \n");
-		printf("\n 9.退出    系统 \n");
-		printf("\n ************************************ \n");
-		printf("\n 请输入您的选择 \n");
-		scanf("%d",&select);
-		switch(select)
-		{
-		case 0:
-			printf("系统已有该职工信息，再次输入将覆盖记录，是否确定（请输入'y'或'n'）");
-				getchar();
-			if((getchar()=='y')||(getchar()=='Y'));
-				a=input(p,a);
-		case 1:
-			read(p,a);
-			break;
-		case 2:
-			write(p,a);
-			break;
-		case 3:
-			find(p,a);
-			break;
-		case 4:
-			list(p,a);
-			break;
-		case 5:
-			modify(p,a);
-			break;
-		case 6:
-			del(p,a);
-			break;
-		case 7:
-			add(p,a);
-			break;
-		case 8:
-			grsds(p,a);
-			break;
-		case 9:
-		    printf("要继续吗？请输入‘y’或者‘n’：");
-		}
-
-		getchar();
-		     ((getchar()=='y')||(getchar()=='Y'));
-				a=input(p,a);
+		menu();
+		scanf("%d",&choice);
+		switch(choice)
+		{	
+			case 1: 
+				find(zggz);
 				break;
-
-
-
+			case 2: 
+				modify(zggz);
+				break;
+			case 3:
+				add(zggz);
+				break; 
+			case 4:
+				del(zggz);
+				break;
+			case 5:
+				write(zggz);
+				break;
+			case 6:
+				list(zggz);
+				break;
+			case 7:
+				exit(0);
+				break;
+			default :
+				break;
 		}
-	
-	while(1);
-	printf("结束！\n");
+	}
 	return 0;
 }
 
-int input(struct worker work[],int a)
-{
-	int i;
-	printf("输入职工信息");
-	scanf("%d",&a);
-	printf("输入格式为：\工号，姓名\n岗位工资，薪级工资，职务津贴，绩效工资，应发工资，个人所得税，实发工资\n");
-	for(i=0;i<a;i++){
-	   
-	scanf("%d,&s",& work[i].gh,work[i].name);
-	scanf("%f,%f,%f,%f,%f,%f,%f,%f",work[i].gw,work[i].xj,work[i].zw,work[i].jx,work[i].yf,work[i].gr,work[i].sf);
-	}
-return a;
-
-}
-
-
-void read(struct worker work[10],int a)//*读取职工信息
-{
-	
-
-}
-void write(struct worker work[10],int a)//*保存职工信息
-{
-}
-void find(struct worker work[10],int a)//*查询职工信息
-{
-}
-void list(struct worker work[10],int a)//*浏览职工信息
-{
-}
-void modify(struct worker work[10],int a)//*修改职工信息
-{
-}
-void del(struct worker work[10],int a)//*删除职工信息
-{
-}
-void add(struct worker work[10],int a)//*添加职工信息
-{
-}
-void grsds(struct worker work[10],int a)//*计算个人所得
-{
-}
