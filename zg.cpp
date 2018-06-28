@@ -1,3 +1,16 @@
+/************************************************************
+Copyright (C), 1988-1999, Huawei Tech. Co., Ltd.
+FileName: zg.cpp
+Author: yanximing 
+Date: 2018.06.28
+Description: // 职工工资管理系统
+Version: // 6.0
+Function List: // 主要函数及其功能
+1.-------
+History: // 历史修改记录
+<author> <time> <version > <desc>
+David 96/10/12 1.0 build this moudle
+***********************************************************/
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -10,7 +23,7 @@ struct worker
 		float xjgz;       //薪级工资
 		float zwjt;          //职务津贴
 		float jxgz;         //绩效工资
-		float yfgz;        //应发工资ct 
+		float yfgz;        //应发工资
 		float sds;           //个人所得税
 		float sfgz;         //实发工资
 }zggz[100];  
@@ -117,7 +130,7 @@ void read(struct worker zggz[100]) //导入数据
 {
 	FILE*fp;
 	n = 0;
-	if((fp=fopen("gx.dat","wt+"))==NULL)
+	if((fp=fopen("gx.dat","rb"))==NULL)
 	{
 			printf ("文件打开失败\n");
 			fclose(fp);
@@ -246,7 +259,85 @@ void find(struct worker zggz[100])//查找
 
 void modify(struct worker zggz[100]) //修改
 {
+	char gonghao[10] = {0};
+	printf("请输入要修改的职工号:\n");
+	scanf("%s",gonghao);
+	flag = 0;
+	for(i=1;i<n+1;i++)
+	{
+		if(strcmp(gonghao,zggz[i].num) == 0)
+		{  
+			flag = 1;
+			break;
 
+		}
+	}
+	if(flag == 1)
+	{
+		printf("请输入职工号：\n");
+		scanf("%s",zggz[i].num);
+		printf("请输入职工姓名：\n");
+		scanf("%s",zggz[i].name);
+		printf("请输入职工岗位工资：\n");
+		scanf("%f",&zggz[i].gwgz);
+		printf("请输入职工薪级工资：\n");
+		scanf("%f",&zggz[i].xjgz);
+		printf("请输入职工职务津贴：\n");
+		scanf("%f",&zggz[i].zwjt);
+		printf("请输入职工绩效工资：\n");
+		scanf("%f",&zggz[i].jxgz);
+			zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz + zggz[i].zwjt + zggz[i].jxgz;
+		
+		
+		zggz[i].sds = grsds(zggz[i].yfgz);
+		if(zggz[i].sds == 5)
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * zggz[i].yfgz;
+		}
+		else if(zggz[i].sds == 10) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 500) + 500;
+		}
+		else if(zggz[i].sds == 15) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 2000) + 2000;
+		}
+		else if(zggz[i].sds == 20) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 5000) + 5000;
+		}
+		else if(zggz[i].sds == 25) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 20000) + 20000;
+		}
+		else if(zggz[i].sds == 30) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 40000) + 40000;
+		}
+		else if(zggz[i].sds == 35) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 60000) + 60000;
+		}
+		else if(zggz[i].sds == 40) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 80000) + 80000;
+		}
+		else if(zggz[i].sds == 45) 
+		{
+			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 100000) + 100000;
+		}
+		
+		
+	}
+	else
+	{
+		printf("\n对不起,查无此人\n");
+	}
+		
+	printf("按回车键退出\n");
+	getchar();
+	getchar();
+	return ;
 }
 
 float grsds(float yfgz)
