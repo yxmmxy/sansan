@@ -1,16 +1,25 @@
 /************************************************************
 Copyright (C), 1988-1999, Huawei Tech. Co., Ltd.
 FileName: zg.cpp
-Author: yanximing 
-Date: 2018.06.28
-Description: // 职工工资管理系统
-Version: // 6.0
+Author: yxm
+Date:2018.6.29
+Description: 七大板块对应七个功能 // 模块描述
+Version: 6.0 // 版本信息
 Function List: // 主要函数及其功能
-1.-------
+1. read（）导入数据
+2. find（）函数查找职工资料
+3. modify（）修改职工资料
+4. add（）添加职工资料
+5. del（）删除职工资料
+6. write（）保存职工资料
+7. list（）浏览职工资料
+8. grsds（）税计算
+9. void main（）菜单页面
+-------
 History: // 历史修改记录
-<author> <time> <version > <desc>
-David 96/10/12 1.0 build this moudle
+David 201/06/29 1.0 build this moudle
 ***********************************************************/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -23,7 +32,7 @@ struct worker
 		float xjgz;       //薪级工资
 		float zwjt;          //职务津贴
 		float jxgz;         //绩效工资
-		float yfgz;        //应发工资
+		float yfgz;        //应发工资 
 		float sds;           //个人所得税
 		float sfgz;         //实发工资
 }zggz[100];  
@@ -88,8 +97,10 @@ void add(struct worker zggz[100])   //添加
 		zggz[n].sfgz = (1 - zggz[n].sds/100) * (zggz[n].yfgz - 100000) + 100000;
 	}
 	
-	printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
-	printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[n].num,zggz[n].name,zggz[n].gwgz,zggz[n].xjgz,zggz[n].zwjt,zggz[n].jxgz,zggz[n].yfgz,zggz[n].sds,zggz[n].sfgz);
+	printf("职工号   姓名   岗位工资   薪级工资   职务津贴   绩效工资   应发工资   个人所得税   实发工资\n"); 
+	printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[n].num,zggz[n].name,zggz[n].gwgz,
+	zggz[n].xjgz,zggz[n].zwjt,zggz[n].jxgz,zggz[n].yfgz,zggz[n].sds,zggz[n].sfgz);
+	
 	printf("添加成功\n");
 	printf("按回车键退出\n");
 	getchar();
@@ -99,10 +110,10 @@ void add(struct worker zggz[100])   //添加
 
 void write(struct worker zggz[100])  //保存文件
 {
-	FILE*fp;   
+	FILE*fp;     //声明文件指针
 	if(n > 0)
 	{
-		if ((fp=fopen("gx.dat","wb"))==NULL) 
+		if ((fp=fopen("gx.dat","wb"))==NULL) //以二进制方式打开职工工资数据文件并进行判断是否失败
 		{
 				printf ("文件打开失败\n");
 				fclose(fp);
@@ -110,8 +121,9 @@ void write(struct worker zggz[100])  //保存文件
 		}
 		for (i=1;i<n+1;i++) 
 		{
-			fprintf(fp,"%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
-		}
+			fprintf(fp,"%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[i].num,zggz[i].name,
+			zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+		}  //输入职工信息
 				
 		fclose(fp);
 		printf("保存数据成功\n");
@@ -131,7 +143,7 @@ void read(struct worker zggz[100]) //导入数据
 	FILE*fp;
 	n = 0;
 	if((fp=fopen("gx.dat","rb"))==NULL)
-	{
+	{ 
 			printf ("文件打开失败\n");
 			fclose(fp);
 			exit(0);
@@ -142,7 +154,8 @@ void read(struct worker zggz[100]) //导入数据
 		while(!feof(fp))
 		{
 			n++;
-			fscanf(fp,"%s %s %f %f %f %f %f %f %f\n",zggz[n].num,zggz[n].name,&zggz[n].gwgz,&zggz[n].xjgz,&zggz[n].zwjt,&zggz[n].jxgz,&zggz[n].yfgz,&zggz[n].sds,&zggz[n].sfgz);
+			fscanf(fp,"%s %s %f %f %f %f %f %f %f\n",zggz[n].num,zggz[n].name,&zggz[n].gwgz,
+			&zggz[n].xjgz,&zggz[n].zwjt,&zggz[n].jxgz,&zggz[n].yfgz,&zggz[n].sds,&zggz[n].sfgz);
 		} 
 	
 		fclose(fp);
@@ -159,7 +172,8 @@ void list(struct worker zggz[100])  //浏览
 	printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
 	for(i=1;i<n+1;i++)
 	{
-		printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+		printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,
+		zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
 	}
 	printf("\n按回车键退出\n");
 	getchar();
@@ -196,21 +210,24 @@ void del(struct worker zggz[100])   //删除
 				{
 					strcpy(zggz[j].num,zggz[j+1].num);
 					strcpy(zggz[j].name,zggz[j+1].name);
-					zggz[j].gwgz=zggz[j+1].gwgz;
-					zggz[j].xjgz=zggz[j+1].xjgz;
-					zggz[j].zwjt=zggz[j+1].zwjt;
-					zggz[j].jxgz=zggz[j+1].jxgz;
-					zggz[j].yfgz=zggz[j+1].yfgz;
-					zggz[j].sds=zggz[j+1].sds;
-					zggz[j].sfgz=zggz[j+1].sfgz;
+					zggz[j].gwgz = zggz[j+1].gwgz;
+					zggz[j].xjgz = zggz[j+1].xjgz;
+					zggz[j].zwjt = zggz[j+1].zwjt;
+					zggz[j].jxgz = zggz[j+1].jxgz;
+					zggz[j].yfgz = zggz[j+1].yfgz;
+					zggz[j].sds = zggz[j+1].sds;
+					zggz[j].sfgz = zggz[j+1].sfgz;
 				}
+
 				n--;
 				break;
 			}
+
 			else if(strcmp(ch,"n") == 0)
 			{
 				break;
 			}
+
 			else
 			{
 				printf("输入错误，请重新输入\n");
@@ -231,7 +248,7 @@ void del(struct worker zggz[100])   //删除
 
 void find(struct worker zggz[100])//查找
 {
-	char gonghao[10] = {0};
+	char gonghao[10] = {0};   //接收职工数组
 	printf("请输入要查找的职工号:\n");
 	scanf("%s",gonghao);
 	flag = 0;
@@ -240,13 +257,14 @@ void find(struct worker zggz[100])//查找
 		if(strcmp(gonghao,zggz[i].num) == 0)
 		{  
 			printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
-			printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
+			printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",
+			zggz[i].num,zggz[i].name,zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
 			flag = 1;
 			break;
 
 		}
 	}
-	if(flag == 0)
+	if(flag == 0)  //进行判断信息判断
 	{		
 		printf("\n对不起,查无此人\n");
 	}
@@ -259,7 +277,7 @@ void find(struct worker zggz[100])//查找
 
 void modify(struct worker zggz[100]) //修改
 {
-	char gonghao[10] = {0};
+    char gonghao[10] = {0};
 	printf("请输入要修改的职工号:\n");
 	scanf("%s",gonghao);
 	flag = 0;
@@ -338,6 +356,7 @@ void modify(struct worker zggz[100]) //修改
 	getchar();
 	getchar();
 	return ;
+
 }
 
 float grsds(float yfgz)
@@ -383,15 +402,18 @@ float grsds(float yfgz)
 
 void menu() //菜单界面
 {
-		printf("***欢迎来到职工管理系统***\n\n");
-		printf("  1  查询  \n");
-		printf("  2  修改  \n");
-		printf("  3  添加  \n");
-		printf("  4  删除  \n");
-		printf("  5  保存  \n");
-		printf("  6  浏览  \n");
-		printf("  7  退出  \n");
-		printf("请选择:");
+		printf("  ###欢迎使用广西民族大学软件与信息安全学院职工工资管理系统###  \n\n\n");
+        printf("  请选择<1-7>:  \n");
+        printf("  ============================================================ \n");
+        printf("  |               1  查询职工工资记录                        | \n");
+		printf("  |               2  修改职工工资记录                        | \n");
+		printf("  |               3  添加职工工资记录                        | \n");
+		printf("  |               4  删除职工工资记录                        | \n");
+		printf("  |               5  保存数据到文件                          | \n");
+		printf("  |               6  浏览职工记录                            | \n");
+		printf("  |               7  退出系统                                | \n");
+        printf("  ============================================================ \n");
+		printf("    你的选择是:");
 }
 
 
