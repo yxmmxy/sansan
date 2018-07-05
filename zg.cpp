@@ -43,8 +43,18 @@ int n = 0;//职工的总人数
 int i = 0;
 int flag = 0;
      
-float grsds(float yfgz,int i);
+void grsds(float yfgz,int i);
 /***********************************************************
+Function: // add
+
+Description: // 添加职工数据
+
+Called By: // main()
+
+Input: // 键盘键入职工数据
+
+Output: // 将数据存入zggz[]
+
 ***********************************************************/
 
 
@@ -77,6 +87,14 @@ void add(struct worker zggz[100])   //添加
 	return ;
 }
 /***********************************************************
+Function: // write
+
+Description: // 保存职工工资数据函数
+
+Called By: // main()
+
+Output: // 将zggz[]数据存入本地文件
+
 ***********************************************************/
 void write(struct worker zggz[100])  //保存文件
 {
@@ -108,12 +126,23 @@ void write(struct worker zggz[100])  //保存文件
 	return ;
 }
 /***********************************************************
+Function: // read
+
+Description: // 读取职工工资数据函数,主函数执行时要调用和必须调用的第一个函数
+
+Called By: // main()
+
+Input: // 本地文件的读取
+
+Output: // 将本地文件数据存入zggz[]
+
+Return: // 函数返回值的说明
 ***********************************************************/
 void read(struct worker zggz[100]) //导入数据
 {
 	FILE*fp;
 	n = 0;
-	if((fp=fopen("gx.dat","rb"))==NULL)
+	if((fp=fopen("gx.dat","a+"))==NULL)
 	{ 
 			printf ("文件打开失败\n");
 			fclose(fp);
@@ -138,13 +167,21 @@ void read(struct worker zggz[100]) //导入数据
 	}
 }
 /***********************************************************
+Function: // list
+
+Description: //浏览职工工资数据函数
+
+Called By: // main()
+
+Output: // 输出全部职工数据
+
 ***********************************************************/
 void list(struct worker zggz[100])  //浏览
 {
 	printf("职工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资\n"); 
 	for(i=1;i<n+1;i++)
 	{
-		printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f%% %2.1f\n",zggz[i].num,zggz[i].name,
+		printf("%s %s %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f %2.1f\n",zggz[i].num,zggz[i].name,
 			zggz[i].gwgz,zggz[i].xjgz,zggz[i].zwjt,zggz[i].jxgz,zggz[i].yfgz,zggz[i].sds,zggz[i].sfgz);
 	}
      
@@ -154,6 +191,15 @@ void list(struct worker zggz[100])  //浏览
 	return ;
 }
 /***********************************************************
+Function: // del
+
+Description: //删除职工工资数据函数
+
+Called By: // main()
+
+Input: // 键盘键入工号
+
+Output: // 修改zggz[]数据
 ***********************************************************/
 void del(struct worker zggz[100])   //删除
 {
@@ -220,6 +266,16 @@ void del(struct worker zggz[100])   //删除
 }
 
 /***********************************************************
+Function: // find
+
+Description: // 查询职工工资数据函数
+
+Called By: // main()
+
+Input: // 键盘键入工号
+
+Output: // 输出特定职工数据
+
 ***********************************************************/
 void find(struct worker zggz[100])//查找
 {
@@ -249,6 +305,15 @@ void find(struct worker zggz[100])//查找
 	return ;		
 }
 /***********************************************************
+Function: //modify
+
+Description: 	// 修改职工工资数据函数
+
+Called By: // main()
+
+Input: // 键盘键入工号
+
+
 ***********************************************************/
 
 void modify(struct worker zggz[100]) //修改
@@ -280,10 +345,8 @@ void modify(struct worker zggz[100]) //修改
 		scanf("%f",&zggz[i].zwjt);
 		printf("请输入职工绩效工资：\n");
 		scanf("%f",&zggz[i].jxgz);
-			zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz + zggz[i].zwjt + zggz[i].jxgz;
-		
-			grsds(zggz[n].yfgz,n);
-    zggz[n].sfgz = zggz[n].yfgz - zggz[n].sds;
+		zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz + zggz[i].zwjt + zggz[i].jxgz;	
+        zggz[i].sfgz = zggz[i].yfgz - zggz[i].sds;
 	
 	
 		
@@ -302,96 +365,63 @@ void modify(struct worker zggz[100]) //修改
 
 }
 /***********************************************************
-***********************************************************/
-float grsds(float yfgz,int i)
-{    
+Function: // grsds
 
+Description: // 个人所得税计算
+Called By: // modify(), add()
+***********************************************************/
+void grsds(float yfgz,int i)
+{    
+     
 
 	if (yfgz > 3500)
 	{
+		if(yfgz <= 4000)
+		{
+			zggz[i].sds = 0.05*(yfgz-3500);
+		}
+		else if(yfgz > 4000 && yfgz <= 6000)
+		{
+			zggz[i].sds = 0.05*(yfgz-3500)+0.1*(yfgz-4000);
+		}
+		else if(yfgz >6000 && yfgz <= 9000)
+		{
+		    zggz[i].sds = 0.05*500+0.1*2000+0.15*(yfgz-6000);
+		}
 
-
-	if(yfgz <= 4000)
+		else if(yfgz > 9000 && yfgz <= 21000)
 		{
-			zggz[i].sds = 5;
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*(yfgz-9000);
 		}
-		else if(yfgz > 4000 && yfgz <= 5500)
+		else if(yfgz > 21000 && yfgz <= 41000)
 		{
-			zggz[i].sds = 10;
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*15000+0.25*(yfgz-21000);
 		}
-		else if(yfgz > 5500 && yfgz <= 8500)
+		else if(yfgz > 41000 && yfgz <= 61000)
 		{
-		    zggz[i].sds = 15;
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*15000+0.25*20000+0.30*(yfgz-41000);
+		}else if(yfgz > 61000 && yfgz <= 81000)
+		{
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*15000+0.25*20000+0.30*20000+0.35*(yfgz-61000);
 		}
-		else if(yfgz > 8500 &&yfgz <= 23500)
+		else if(yfgz > 81000 && yfgz <= 101000)
 		{
-			zggz[i].sds = 20;
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*15000+0.25*15000+0.30*20000+0.35*20000+0.40*(yfgz-81000);
+		}else if(yfgz > 101000)
+		{
+			zggz[i].sds = 0.05*500+0.1*2000+0.15*3000+0.20*15000+0.25*15000+0.30*20000+0.35*20000+0.40*20000+0.45*(yfgz-101000);
 		}
-		else if(yfgz > 23500 && yfgz <= 43500)
-		{
-			zggz[i].sds = 25;
-		}
-		else if(yfgz > 43500 && yfgz <= 63500)
-		{
-			zggz[i].sds = 30;
-		}else if(yfgz > 63500 && yfgz <= 83500)
-		{
-			zggz[i].sds = 35;
-		}
-		else if(yfgz > 83500 && yfgz <= 103500)
-		{
-			zggz[i].sds = 40;
-		}else 
-		{
-			zggz[i].sds = 45;
-		}
+	}
 	
-     if(zggz[i].sds == 5)
-		{
-		 zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz-3500);
-		}
-		else if(zggz[i].sds == 10) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 4000) + 500;
-		}
-		else if(zggz[i].sds == 15) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 5500) + 2000;
-		}
-		else if(zggz[i].sds == 20) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 8500) + 5000;
-		}
-		else if(zggz[i].sds == 25) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 23500) + 20000;
-		}
-		else if(zggz[i].sds == 30) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 43500) + 40000;
-		}
-		else if(zggz[i].sds == 35) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 63500) + 60000;
-		}
-		else if(zggz[i].sds == 40) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 83500) + 80000;
-		}
-		else if(zggz[i].sds == 45) 
-		{
-			zggz[i].sfgz = (1 - zggz[i].sds/100) * (zggz[i].yfgz - 103500) + 100000;
-		}
-		}
+     
 	else
 	{
 		zggz[i].sds=0;
 	}
 
-      return 0;
 }
 /***********************************************************
-***********************************************************/
+ ***********************************************************/
 void menu() //菜单界面
 {
 		printf("  ###欢迎使用广西民族大学软件与信息安全学院职工工资管理系统###  \n\n\n");
@@ -421,24 +451,31 @@ int main()
 		switch(choice)
 		{	
 			case 1: 
+                system("cls");
 				find(zggz);
 				break;
+              
 			case 2: 
+                system("cls");
 				modify(zggz);
 				break;
 			case 3:
+                 system("cls");
 				add(zggz);
 				break; 
 			case 4:
 				del(zggz);
 				break;
 			case 5:
+                system("cls"); 
 				write(zggz);
 				break;
 			case 6:
+                 system("cls");
 				list(zggz);
 				break;
 			case 7:
+                system("cls");
 				exit(0);
 				break;
 			default :
